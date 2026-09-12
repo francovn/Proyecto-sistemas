@@ -18,7 +18,7 @@ La solución propuesta busca centralizar el registro de las entradas, salidas y 
 - `docs/01-requerimientos.md`: alcance y requerimientos principales del sistema.
 - `docs/02-er-preliminar.md`: modelo entidad-relación preliminar.
 - `docs/assets/bpmn.md`: descripción de los procesos AS-IS y TO-BE.
-- `docs/assets/`: diagramas e imágenes utilizadas en el proyecto.
+- `docs/assets/`: diagramas exportados + imágenes de diagramas.
 - `informe/`: informe correspondiente a la Entrega 1.
 
 ## Relación con la Entrega 2
