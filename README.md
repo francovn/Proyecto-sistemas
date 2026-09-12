@@ -16,9 +16,9 @@ La solución propuesta busca centralizar el registro de las entradas, salidas y 
 
 - `docs/00-caso-pyme.md`: descripción de la PYME y problema identificado.
 - `docs/01-requerimientos.md`: alcance y requerimientos principales del sistema.
-- `docs/02-bpmn.md`: descripción de los procesos AS-IS y TO-BE.
-- `docs/03-er-preliminar.md`: modelo entidad-relación preliminar.
-- `assets/`: diagramas e imágenes utilizadas en el proyecto.
+- `docs/02-er-preliminar.md`: modelo entidad-relación preliminar.
+- `docs/assets/bpmn.md`: descripción de los procesos AS-IS y TO-BE.
+- `docs/assets/`: diagramas e imágenes utilizadas en el proyecto.
 - `informe/`: informe correspondiente a la Entrega 1.
 
 ## Relación con la Entrega 2
