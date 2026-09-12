@@ -8,3 +8,5 @@
 - **Fecha de la entrevista:** 11 de septiembre de 2026
 - **Modalidad:** Entrevista presencial
 - **Medio de respaldo:** Registro de audio y posterior transcripción
+
+![Acta de entrevista](assets/entrevista/Acta%20entrevista.jpeg)
