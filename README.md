@@ -16,14 +16,13 @@ La solución propuesta busca centralizar el registro de las entradas, salidas y 
 
 - `docs/00-caso-pyme.md`: descripción de la PYME y problema identificado.
 - `docs/01-requerimientos.md`: alcance y requerimientos principales del sistema.
-- `docs/02-er-preliminar.md`: modelo entidad-relación preliminar.
 - `docs/assets/bpmn.md`: descripción de los procesos AS-IS y TO-BE.
 - `docs/assets/`: diagramas exportados + imágenes de diagramas.
 - `informe/`: informe correspondiente a la Entrega 1.
 
 ## Relación con la Entrega 2
 
-En la Entrega 2 se desarrollará un prototipo funcional ejecutable en localhost. Este permitirá registrar y consultar información del inventario, manteniendo actualizadas las existencias y apoyando la planificación de compras.
+Para la segunda entrega se desarrollará un prototipo funcional del sistema de información propuesto para Las 3 Delicias. Este permitirá registrar materias primas, compras, entradas y consumos, además de mantener actualizado el inventario y apoyar las decisiones de compra y reposición.
 
 Inicialmente se considera utilizar Python, Streamlit y SQLite para el desarrollo del prototipo.
 
