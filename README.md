@@ -19,7 +19,7 @@ La solución propuesta busca centralizar el registro de las entradas, salidas y 
 - `docs/02-acta-entrevista.md`: información general y respaldo de la entrevista realizada al propietario de la PYME.
 - `docs/assets/bpmn.md`: descripción de los procesos AS-IS y TO-BE.
 - `docs/assets/`: diagramas exportados + imágenes de diagramas.
-- - `docs/assets/entrevista/`: datos del propietario y su firma
+- `docs/assets/entrevista/`: datos del propietario y su firma
 - `informe/`: informe correspondiente a la Entrega 1.
 
 ## Relación con la Entrega 2
