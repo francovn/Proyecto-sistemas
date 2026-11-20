@@ -31,13 +31,14 @@ La solución es un SIG con tres componentes:
 │   ├── 05-automatizacion-n8n.md  # Flujo n8n trazado al BPMN TO-BE
 │   ├── 06-acta-entrevista.md     # Respaldo de la entrevista al propietario
 │   ├── DECLARACION_IA.md
-│   └── assets/                   # Diagramas (.png/.bpm), ER, imagen del acta
-├── automatizacion/
-│   ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_flujo_alerta_inventario.json
-│   ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_codigo_nodo_estado_alertas.js
-│   ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_consulta_alertas_workbench.sql
-│   ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_consulta_alertas_json.sql
-│   └── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_datos_fijados_13_alertas.json
+│   ├── assets/                   # Diagramas (.png/.bpm), ER, imagen del acta
+|   ├── Página Web/               # Fotos de la página web
+|   └── Automatización/                  
+|         ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_flujo_alerta_inventario.json
+│         ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_codigo_nodo_estado_alertas.js
+│         ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_consulta_alertas_workbench.sql
+│         ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_consulta_alertas_json.sql
+│         └── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_datos_fijados_13_alertas.json
 ├── informe/
 │   ├── ICN292_P100_E2_<apellidos>.pdf
 │   └── ICN292_P100_E2_<apellidos>.docx
