@@ -25,13 +25,11 @@ La solución es un SIG con tres componentes:
 ├── docs/
 │   ├── 00-caso-pyme.md
 │   ├── 01-requerimientos.md
-│   ├── 02-bpmn.md                # BPMN AS-IS / TO-BE y cambios vs. E1
-│   ├── 03-modelo-datos.md        # ER 3FN, diccionario de datos
-│   ├── 04-sql-consultas.md       # Consultas interpretadas (C1–C3 de alertas en detalle)
-│   ├── 05-automatizacion-n8n.md  # Flujo n8n trazado al BPMN TO-BE
-│   ├── 06-acta-entrevista.md     # Respaldo de la entrevista al propietario
+│   ├── 02-acta-entrevista.md     # Respaldo de la entrevista al propietario
+│   ├── 03-sql-consultas.md       # Consultas interpretadas (C1–C3 de alertas en detalle)
+│   ├── 04-automatizacion-n8n.md  # Flujo n8n trazado al BPMN TO-BE
 │   ├── DECLARACION_IA.md
-│   ├── assets/                   # Diagramas (.png/.bpm), ER, imagen del acta
+│   ├── assets/                   # Diagramas (.png/.bpm), ER, imagen del acta y BPMN AS-IS / TO-BE y cambios vs. E1
 |   ├── Página Web/               # Fotos de la página web
 |   └── Automatización/                  
 |         ├── ICN292_P100_E2_Aspee_Suarez_Vargas_Garcia_Landerretche_n8n_flujo_alerta_inventario.json
@@ -59,10 +57,10 @@ La solución es un SIG con tres componentes:
 1. **Crear la base y las tablas.** En MySQL Workbench: `File → Open SQL Script… → db/schema.sql` y ejecutar todo (⚡). Crea 13 tablas.
 2. **Cargar los datos.** Abrir `db/seed.sql` y ejecutar todo. La fecha de referencia de los datos es **16-11-2026**.
 3. **Ejecutar las consultas.**
-   - `db/consultas.sql` → consultas C1–C9 (resultados interpretados en `docs/04-sql-consultas.md`).
+   - `db/consultas.sql` → consultas C1–C9 (resultados interpretados en `docs/03-sql-consultas.md`).
    - `automatizacion/…_n8n_consulta_alertas_workbench.sql` → las 13 alertas del día de referencia (6 insumos por comprar, 4 productos bajo mínimo de vitrina, 3 insumos por vencer).
    - Resultado esperado: coincide con `automatizacion/…_n8n_datos_fijados_13_alertas.json`.
-4. **Levantar el flujo n8n.** Instrucciones completas en [`docs/05-automatizacion-n8n.md`](docs/05-automatizacion-n8n.md). Resumen:
+4. **Levantar el flujo n8n.** Instrucciones completas en [`docs/04-automatizacion-n8n.md`](docs/04-automatizacion-n8n.md). Resumen:
    1. En n8n: `Workflows → Import from file →` `automatizacion/…_n8n_flujo_alerta_inventario.json`.
    2. Crear las credenciales **MySQL las3delicias** (host, puerto, base `las3delicias`, usuario) y **SMTP alertas**, y asignarlas a los nodos *Consultar alertas (MySQL)* y *Enviar correo al dueño*.
    3. Cambiar el destinatario (`correo-del-propietario@ejemplo.cl`) y el remitente en el nodo de correo.
@@ -84,11 +82,10 @@ La solución es un SIG con tres componentes:
 |---|---|
 | [`docs/00-caso-pyme.md`](docs/00-caso-pyme.md) | Caso y problema |
 | [`docs/01-requerimientos.md`](docs/01-requerimientos.md) | RF / RNF |
-| [`docs/02-bpmn.md`](docs/02-bpmn.md) | BPMN AS-IS / TO-BE y cambios |
-| [`docs/03-modelo-datos.md`](docs/03-modelo-datos.md) | ER 3FN y diccionario |
-| [`docs/04-sql-consultas.md`](docs/04-sql-consultas.md) | Consultas de negocio interpretadas |
-| [`docs/05-automatizacion-n8n.md`](docs/05-automatizacion-n8n.md) | Flujo n8n ↔ BPMN |
-| [`docs/06-acta-entrevista.md`](docs/06-acta-entrevista.md) | Entrevista al propietario |
+| [`docs/02-acta-entrevista.md`](docs/02-acta-entrevista.md) | Entrevista al propietario |
+| [`docs/03-sql-consultas.md`](docs/03-sql-consultas.md) | Consultas de negocio interpretadas |
+| [`docs/04-automatizacion-n8n.md`](docs/04-automatizacion-n8n.md) | Flujo n8n ↔ BPMN |
+| [`docs/assets/bpmn.md`](docs/assets/bpmn.md) | BPMN AS-IS / TO-BE y cambios |
 | [`docs/DECLARACION_IA.md`](docs/DECLARACION_IA.md) | Uso de IA |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios desde E1 |
 
