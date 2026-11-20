@@ -30,7 +30,7 @@ El flujo tiene 6 nodos en 4 etapas (disparo → consulta → estado → decisió
 
 ## 3. Paso 2: consulta SQL (C1, C2, C3)
 
-Reglas completas en [`04-sql-consultas.md`](04-sql-consultas.md). Resumen:
+Reglas completas en [`03-sql-consultas.md`](03-sql-consultas.md). Resumen:
 
 - **C1 – `Comprar`:** insumos con stock (suma de lotes) menor que `GREATEST(stock_minimo_semanal, consumo últimos 7 días)`.
 - **C2 – `Vitrina`:** productos con stock en tienda menor que `stock_minimo_tienda`. Sugiere reponer desde bodega o producir.
@@ -73,8 +73,7 @@ Código: `automatizacion/…_n8n_codigo_nodo_estado_alertas.js` (idéntico al de
 | Elemento | Respaldo |
 |---|---|
 | Tarea y evento BPMN | [`02-bpmn.md`](02-bpmn.md), carril «Sistema (app web + n8n)» |
-| Tablas y campos consultados | [`03-modelo-datos.md`](03-modelo-datos.md) |
-| Reglas C1–C3 e interpretación | [`04-sql-consultas.md`](04-sql-consultas.md) |
+| Reglas C1–C3 e interpretación | [`03-sql-consultas.md`](03-sql-consultas.md) |
 | Requerimientos cubiertos | RF07–RF09 (mínimos, identificar reposición, alertas) y RF14–RF17 (ubicación, vencimiento, receta, reposición). 
 
 ## 7. Cómo reproducirlo
