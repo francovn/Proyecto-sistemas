@@ -96,7 +96,7 @@ La solución es un SIG con tres componentes:
 
 - El catálogo, las recetas y los mínimos provienen de la PYME. Las compras, producciones y movimientos iniciales son **sintéticos coherentes con el caso**, más movimientos reales incorporados después. 
 - El estado de las alertas (nueva / pendiente / cerrada) vive en la memoria del flujo n8n, no en la base de datos.
-- Aplicación web: 
+- Aplicación web: Por solicitud del propietario no se publica ni se enlaza, porque contiene datos del negocio que no desea compartir. Las capturas de [`docs/pagina-web/`](docs/pagina-web/) corresponden a una versión anterior, previa a que el propietario modificara los datos, y no reflejan el estado actual. La reproducibilidad de la solución se demuestra con `db/` y `docs/automatizacion/`, que no dependen de la página.
 
 ## 6. Integrantes y roles
 
