@@ -72,7 +72,7 @@ Código: `automatizacion/…_n8n_codigo_nodo_estado_alertas.js` (idéntico al de
 
 | Elemento | Respaldo |
 |---|---|
-| Tarea y evento BPMN | [`02-bpmn.md`](02-bpmn.md), carril «Sistema (app web + n8n)» |
+| Tarea y evento BPMN | [`/assets/bpmn.mdd`](/assets/bpmn.md), carril «Sistema (app web + n8n)» |
 | Reglas C1–C3 e interpretación | [`03-sql-consultas.md`](03-sql-consultas.md) |
 | Requerimientos cubiertos | RF07–RF09 (mínimos, identificar reposición, alertas) y RF14–RF17 (ubicación, vencimiento, receta, reposición). 
 
