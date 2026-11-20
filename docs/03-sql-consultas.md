@@ -4,7 +4,7 @@ Motor: **MySQL Workbench 8.0 CE** (base `las3delicias`). Scripts: `db/schema.sql
 
 ## 1. Consultas de alerta (C1, C2, C3)
 
-Las tres alimentan el correo diario de n8n (ver [`05-automatizacion-n8n.md`](05-automatizacion-n8n.md)). Se consolidan con `UNION ALL` en una salida de tres columnas: `tipo`, `item`, `detalle`.
+Las tres alimentan el correo diario de n8n (ver [`04-automatizacion-n8n.md`](04-automatizacion-n8n.md)). Se consolidan con `UNION ALL` en una salida de tres columnas: `tipo`, `item`, `detalle`.
 
 Tablas y campos usados: `insumo(nombre, id_unidad, stock_minimo_semanal)`, `unidad_medida(abreviatura)`, `lote_insumo(cantidad_actual, fecha_vencimiento)`, `movimiento_insumo(tipo, cantidad, fecha_hora)`, `producto(nombre, stock_minimo_tienda)`, `lote_producto(ubicacion, cantidad_actual)`.
 
