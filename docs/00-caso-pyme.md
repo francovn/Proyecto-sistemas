@@ -23,3 +23,4 @@ Esta forma de trabajo puede generar:
 ## Solución propuesta
 
 Se propone desarrollar un sistema de información que permita registrar las materias primas, sus entradas y consumos, manteniendo actualizado el stock disponible y apoyando las decisiones de compra y reposición.
+
