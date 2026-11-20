@@ -2,8 +2,6 @@
 
 Proyecto de la asignatura **ICN-292 Sistemas de Información para la Gestión** (UTFSM, 2026-2), Grupo 13, Paralelo 100. Entrega 2 (E2): solución SIG final.
 
-> ⚠️ **TODO (borrar antes de entregar):** los marcadores `[CONFIRMAR: …]` indican datos que no pude verificar en el repositorio. Reemplácelos o elimínelos.
-
 ## 1. PYME y problema
 
 Las 3 Delicias es una pastelería de Quilicura atendida por su propietario y su hermano. Antes del proyecto no había registro de inventario: el stock de insumos y productos se revisaba a ojo y se compraba "lo que se ve que falta". Efectos: quiebres de stock, compras imprevistas con sobreprecio y merma de productos con crema.
@@ -95,9 +93,9 @@ La solución es un SIG con tres componentes:
 
 ## 5. Datos y limitaciones
 
-- El catálogo, las recetas y los mínimos provienen de la PYME. Las compras, producciones y movimientos iniciales son **sintéticos coherentes con el caso**, más movimientos reales incorporados después. `[CONFIRMAR: separar qué registros son reales y cuáles simulados]`
+- El catálogo, las recetas y los mínimos provienen de la PYME. Las compras, producciones y movimientos iniciales son **sintéticos coherentes con el caso**, más movimientos reales incorporados después. 
 - El estado de las alertas (nueva / pendiente / cerrada) vive en la memoria del flujo n8n, no en la base de datos.
-- Aplicación web: `[CONFIRMAR: URL o carpeta app/ con el código; hoy no está en el repositorio]`.
+- Aplicación web: 
 
 ## 6. Integrantes y roles
 
