@@ -11,7 +11,7 @@
   - datos fijados de 13 alertas para probar sin base.
 - **Modelo de datos:** nuevas tablas `lote_insumo`, `lote_producto`, `produccion`, `movimiento_insumo` y `movimiento_producto`. `docs/Las_3_Delicias_-_Modelo_ER_3FN_E2.png`.
 - **Informe E2** en PDF y Word, y **presentación** para la defensa (≤7 min).
-- **Documentación:** `02-bpmn.md`, `03-modelo-datos.md`, `04-sql-consultas.md`, `05-automatizacion-n8n.md`, `DECLARACION_IA.md`, `CHANGELOG.md`, `ENLACE_GITHUB.txt`.
+- **Documentación:** `docs/assets/bpmn.md`, `03-sql-consultas.md`, `04-automatizacion-n8n.md`, `DECLARACION_IA.md`, `CHANGELOG.md`.
 - **Requerimientos nuevos (RF14–RF17):** stock por ubicación (tienda/bodega), aviso de vencimiento, descuento de insumos por receta y reposición de vitrina.
 
 ### Cambiado
