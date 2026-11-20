@@ -1,0 +1,286 @@
+{
+  "name": "Las 3 Delicias - Alerta diaria de inventario (v2)",
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "Todos los días 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "notes": "BPMN: evento de inicio 'Todos los días 07:00'"
+    },
+    {
+      "id": "a2",
+      "name": "Consultar alertas (MySQL)",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "",
+          "name": "MySQL las3delicias"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT 'Comprar' AS tipo, i.nombre AS item,\n       CONCAT('Hay ', ROUND(COALESCE(s.stock,0),2), ' ', u.abreviatura, ' de ', ROUND(GREATEST(i.stock_minimo_semanal, COALESCE(c.c7,0)),2), ' (comprar ',\n              ROUND(GREATEST(i.stock_minimo_semanal, COALESCE(c.c7,0)) - COALESCE(s.stock,0),2), ' ', u.abreviatura, ')') AS detalle\nFROM insumo i JOIN unidad_medida u ON u.id_unidad = i.id_unidad\nLEFT JOIN (SELECT id_insumo, SUM(cantidad_actual) stock FROM lote_insumo GROUP BY id_insumo) s ON s.id_insumo = i.id_insumo\nLEFT JOIN (SELECT id_insumo, SUM(cantidad) c7 FROM movimiento_insumo WHERE tipo IN ('consumo','uso') AND fecha_hora >= CURDATE() - INTERVAL 7 DAY AND fecha_hora < CURDATE() GROUP BY id_insumo) c ON c.id_insumo = i.id_insumo\nWHERE COALESCE(s.stock,0) < GREATEST(i.stock_minimo_semanal, COALESCE(c.c7,0))\nUNION ALL\nSELECT 'Vitrina', producto, CONCAT('Hay ', en_tienda, ' de ', minimo, IF(en_bodega > 0, CONCAT(' (reponer desde bodega: ', en_bodega, ')'), ' (producir)'))\nFROM (SELECT p.nombre producto, p.stock_minimo_tienda minimo,\n             ROUND(COALESCE(SUM(CASE WHEN l.ubicacion='tienda' THEN l.cantidad_actual END),0),2) en_tienda,\n             ROUND(COALESCE(SUM(CASE WHEN l.ubicacion='bodega' THEN l.cantidad_actual END),0),2) en_bodega\n      FROM producto p LEFT JOIN lote_producto l ON l.id_producto = p.id_producto\n      WHERE p.stock_minimo_tienda > 0 GROUP BY p.id_producto, p.nombre, p.stock_minimo_tienda) t\nWHERE en_tienda < minimo\nUNION ALL\nSELECT 'Vence', i.nombre, CONCAT(SUM(l.cantidad_actual), ' ', u.abreviatura, ' vence el ', DATE_FORMAT(l.fecha_vencimiento,'%d-%m'), ' (', DATEDIFF(l.fecha_vencimiento, CURDATE()), ' días)')\nFROM lote_insumo l JOIN insumo i ON i.id_insumo = l.id_insumo JOIN unidad_medida u ON u.id_unidad = i.id_unidad\nWHERE l.fecha_vencimiento IS NOT NULL AND DATEDIFF(l.fecha_vencimiento, CURDATE()) <= 5\nGROUP BY i.nombre, u.abreviatura, l.fecha_vencimiento;",
+        "options": {}
+      },
+      "notes": "BPMN: 'Consultar stock, vitrina y vencimientos (C1 a C3)'. Une C1 (comprar), C2 (vitrina) y C3 de insumos (vencen en 5 días o menos). alwaysOutputData=true para que el flujo siga (y cierre alertas) aunque hoy no haya filas."
+    },
+    {
+      "id": "a3",
+      "name": "Actualizar estado de alertas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// BPMN: \"Actualizar estado de las alertas (abrir, mantener o cerrar)\".\n// Compara las alertas de hoy con las de la ejecución anterior (guardadas en el estado del flujo):\n//   - alerta que aparece por primera vez  -> NUEVA (se abre)\n//   - alerta que ya estaba abierta         -> PENDIENTE (se mantiene, con su antigüedad)\n//   - alerta que ya no aparece             -> CERRADA (el stock volvió a estar sobre el mínimo, se repuso la vitrina o el lote ya no vence)\nconst esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst zona = { timeZone: 'America/Santiago' };\nconst hoy = new Date().toLocaleDateString('en-CA', zona);            // AAAA-MM-DD\nconst fechaCL = new Date().toLocaleDateString('es-CL', zona);\nconst dias = desde => Math.round((Date.parse(hoy) - Date.parse(desde)) / 86400000);\nconst plural = n => `${n} día${n === 1 ? '' : 's'}`;\n\nconst rows = $input.all().map(i => i.json).filter(r => r && r.tipo);   // sin filas = ninguna alerta hoy\nconst estado = $getWorkflowStaticData('global');\nconst previas = estado.alertas || {};\nconst claveDe = r => {\n  const f = r.tipo === 'Vence' ? ((String(r.detalle).match(/vence el (\\d{2}-\\d{2})/) || [])[1] || '') : '';\n  return [r.tipo, r.item, f].join('|');\n};\n\nconst actuales = {};\nconst nuevas = [], pendientes = [], cerradas = [];\nfor (const r of rows) {\n  const k = claveDe(r);\n  const previa = previas[k];\n  actuales[k] = { tipo: r.tipo, item: r.item, detalle: r.detalle, desde: previa ? previa.desde : hoy };\n  (previa ? pendientes : nuevas).push({ ...actuales[k], dias: dias(actuales[k].desde) });\n}\nfor (const [k, a] of Object.entries(previas)) {\n  if (!actuales[k]) cerradas.push({ ...a, dias: dias(a.desde) });\n}\nestado.alertas = actuales;                                              // queda guardado para la ejecución de mañana\n\nconst abiertas = [...nuevas, ...pendientes];\nconst TITULOS = { Comprar: '🛒 Insumos para comprar', Vitrina: '🧁 Falta en vitrina', Vence: '⏰ Vence en 5 días o menos' };\nlet html = `<h2>Las 3 Delicias · alertas de inventario del ${fechaCL}</h2>`;\nfor (const tipo of ['Comprar', 'Vitrina', 'Vence']) {\n  const items = abiertas.filter(a => a.tipo === tipo);\n  if (!items.length) continue;\n  html += `<h3>${TITULOS[tipo]} (${items.length})</h3><ul>` + items.map(a =>\n    `<li><b>${esc(a.item)}</b>: ${esc(a.detalle)} <i>${a.dias > 0 ? `(pendiente hace ${plural(a.dias)})` : '(nueva)'}</i></li>`).join('') + '</ul>';\n}\nif (cerradas.length) {\n  html += `<h3>✅ Cerradas desde ayer (${cerradas.length})</h3><ul>` + cerradas.map(a =>\n    `<li>${esc(a.item)} <i>(${esc(a.tipo.toLowerCase())}; estuvo abierta ${plural(a.dias)})</i></li>`).join('') + '</ul>';\n}\nreturn [{ json: {\n  asunto: `Inventario ${fechaCL}: ${abiertas.length} alertas abiertas (${nuevas.length} nuevas, ${pendientes.length} pendientes, ${cerradas.length} cerradas)`,\n  html, total_abiertas: abiertas.length, nuevas: nuevas.length, pendientes: pendientes.length, cerradas: cerradas.length\n} }];\n"
+      },
+      "notes": "BPMN: 'Actualizar estado de las alertas (abrir, mantener o cerrar)'"
+    },
+    {
+      "id": "a4",
+      "name": "¿Hay alertas abiertas?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.total_abiertas }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "notes": "BPMN: compuerta '¿Hay alertas abiertas?'. Salida true -> correo; false -> fin sin enviar."
+    },
+    {
+      "id": "a5",
+      "name": "Enviar correo al dueño",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        -80
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP alertas"
+        }
+      },
+      "parameters": {
+        "fromEmail": "alertas@las3delicias.cl",
+        "toEmail": "correo-del-propietario@ejemplo.cl",
+        "subject": "={{ $json.asunto }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "notes": "BPMN: 'Enviar correo con alertas al propietario'"
+    },
+    {
+      "id": "a6",
+      "name": "Sin alertas: fin",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        960,
+        100
+      ],
+      "parameters": {},
+      "notes": "BPMN: fin 'Sin alertas abiertas'"
+    }
+  ],
+  "connections": {
+    "Todos los días 07:00": {
+      "main": [
+        [
+          {
+            "node": "Consultar alertas (MySQL)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar alertas (MySQL)": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado de alertas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar estado de alertas": {
+      "main": [
+        [
+          {
+            "node": "¿Hay alertas abiertas?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Hay alertas abiertas?": {
+      "main": [
+        [
+          {
+            "node": "Enviar correo al dueño",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sin alertas: fin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Santiago"
+  },
+  "pinData": {
+    "Consultar alertas (MySQL)": [
+      {
+        "json": {
+          "item": "Coco rallado",
+          "tipo": "Comprar",
+          "detalle": "Hay 1.90 kg de 2.00 (comprar 0.10 kg)"
+        }
+      },
+      {
+        "json": {
+          "item": "Fruta confitada y pasas",
+          "tipo": "Comprar",
+          "detalle": "Hay 1.90 kg de 2.00 (comprar 0.10 kg)"
+        }
+      },
+      {
+        "json": {
+          "item": "Almendra",
+          "tipo": "Comprar",
+          "detalle": "Hay 0.00 kg de 1.10 (comprar 1.10 kg)"
+        }
+      },
+      {
+        "json": {
+          "item": "Manzana fresca",
+          "tipo": "Comprar",
+          "detalle": "Hay 2.90 kg de 13.00 (comprar 10.10 kg)"
+        }
+      },
+      {
+        "json": {
+          "item": "Leche evaporada",
+          "tipo": "Comprar",
+          "detalle": "Hay 0.40 kg de 3.00 (comprar 2.60 kg)"
+        }
+      },
+      {
+        "json": {
+          "item": "Yoghurt",
+          "tipo": "Comprar",
+          "detalle": "Hay 0.40 L de 2.00 (comprar 1.60 L)"
+        }
+      },
+      {
+        "json": {
+          "item": "Pastel individual surtido",
+          "tipo": "Vitrina",
+          "detalle": "Hay 19.00 de 20.000 (producir)"
+        }
+      },
+      {
+        "json": {
+          "item": "Rollito dulce",
+          "tipo": "Vitrina",
+          "detalle": "Hay 9.00 de 12.000 (producir)"
+        }
+      },
+      {
+        "json": {
+          "item": "Berlín manjar",
+          "tipo": "Vitrina",
+          "detalle": "Hay 9.00 de 12.000 (producir)"
+        }
+      },
+      {
+        "json": {
+          "item": "Berlín crema pastelera",
+          "tipo": "Vitrina",
+          "detalle": "Hay 10.00 de 12.000 (producir)"
+        }
+      },
+      {
+        "json": {
+          "item": "Frutilla",
+          "tipo": "Vence",
+          "detalle": "7.000 kg vence el 20-11 (4 días)"
+        }
+      },
+      {
+        "json": {
+          "item": "Arándano",
+          "tipo": "Vence",
+          "detalle": "0.100 kg vence el 16-11 (0 días)"
+        }
+      },
+      {
+        "json": {
+          "item": "Crema para batir",
+          "tipo": "Vence",
+          "detalle": "2.420 L vence el 19-11 (3 días)"
+        }
+      }
+    ]
+  }
+}

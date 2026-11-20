@@ -1,0 +1,67 @@
+[
+ {
+  "item": "Coco rallado",
+  "tipo": "Comprar",
+  "detalle": "Hay 1.90 kg de 2.00 (comprar 0.10 kg)"
+ },
+ {
+  "item": "Fruta confitada y pasas",
+  "tipo": "Comprar",
+  "detalle": "Hay 1.90 kg de 2.00 (comprar 0.10 kg)"
+ },
+ {
+  "item": "Almendra",
+  "tipo": "Comprar",
+  "detalle": "Hay 0.00 kg de 1.10 (comprar 1.10 kg)"
+ },
+ {
+  "item": "Manzana fresca",
+  "tipo": "Comprar",
+  "detalle": "Hay 2.90 kg de 13.00 (comprar 10.10 kg)"
+ },
+ {
+  "item": "Leche evaporada",
+  "tipo": "Comprar",
+  "detalle": "Hay 0.40 kg de 3.00 (comprar 2.60 kg)"
+ },
+ {
+  "item": "Yoghurt",
+  "tipo": "Comprar",
+  "detalle": "Hay 0.40 L de 2.00 (comprar 1.60 L)"
+ },
+ {
+  "item": "Pastel individual surtido",
+  "tipo": "Vitrina",
+  "detalle": "Hay 19.00 de 20.000 (producir)"
+ },
+ {
+  "item": "Rollito dulce",
+  "tipo": "Vitrina",
+  "detalle": "Hay 9.00 de 12.000 (producir)"
+ },
+ {
+  "item": "Berlín manjar",
+  "tipo": "Vitrina",
+  "detalle": "Hay 9.00 de 12.000 (producir)"
+ },
+ {
+  "item": "Berlín crema pastelera",
+  "tipo": "Vitrina",
+  "detalle": "Hay 10.00 de 12.000 (producir)"
+ },
+ {
+  "item": "Frutilla",
+  "tipo": "Vence",
+  "detalle": "7.000 kg vence el 20-11 (4 días)"
+ },
+ {
+  "item": "Arándano",
+  "tipo": "Vence",
+  "detalle": "0.100 kg vence el 16-11 (0 días)"
+ },
+ {
+  "item": "Crema para batir",
+  "tipo": "Vence",
+  "detalle": "2.420 L vence el 19-11 (3 días)"
+ }
+]
