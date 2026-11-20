@@ -1,43 +1,81 @@
-# Caso PYME
+# Requerimientos del sistema
 
-## Las 3 Delicias
+## Actores principales
 
-Las 3 Delicias es una pequeña empresa ubicada en Quilicura, dedicada a la elaboración y venta de pasteles y masas.
+Los principales actores identificados son:
 
-El negocio funciona principalmente con el propietario y su hermano, quienes participan en actividades como compra de insumos, producción, atención de pedidos y comercialización.
+- Propietario/Administrador.
+- Apoyo operativo/Hermano.
+- Proveedor.
 
-## Problema identificado
+El propietario y su hermano serán los principales usuarios del sistema, ya que ambos participan en las compras y actividades operativas de la PYME.
 
-Actualmente no existe un sistema centralizado para controlar el inventario de materias primas.
+## Alcance
 
-Las cantidades disponibles se revisan principalmente de manera visual y las compras se realizan de acuerdo con los insumos que se observa que están faltando.
+El sistema estará enfocado principalmente en el control de materias primas e insumos.
 
-Esta forma de trabajo puede generar:
+Permitirá:
 
-- quiebres de stock;
-- compras imprevistas;
-- problemas de coordinación entre quienes realizan las compras;
-- dificultad para planificar las compras y producción;
-- falta de información histórica del inventario.
+- registrar materias primas e insumos;
+- registrar compras o entradas;
+- registrar consumos o salidas;
+- mantener actualizado el stock;
+- consultar las existencias disponibles;
+- establecer niveles mínimos de inventario;
+- identificar materias primas que requieren reposición;
+- mantener un historial de movimientos;
+- apoyar las decisiones de compra.
 
-## Solución propuesta
+Quedan fuera de esta primera propuesta funciones como gestión completa de ventas, pedidos por WhatsApp, comercio electrónico, facturación, contabilidad, recursos humanos y gestión de transporte.
 
-Se propone desarrollar un sistema de información que permita registrar las materias primas, sus entradas y consumos, manteniendo actualizado el stock disponible y apoyando las decisiones de compra y reposición.
+## Requerimientos funcionales principales
 
-## Alcance de la Entrega 2
+### Must
 
-El caso es el mismo de la Entrega 1. En E2 el alcance creció desde el control de insumos hacia el control de **productos terminados**, porque en la validación con el propietario la merma de los productos con crema resultó ser tan relevante como los quiebres de insumos.
+- RF01: Registrar materias primas e insumos.
+- RF02: Modificar información de materias primas.
+- RF03: Registrar compras o entradas.
+- RF04: Registrar consumos o salidas.
+- RF05: Actualizar las existencias después de una entrada o salida.
+- RF06: Consultar el stock disponible.
 
-Lo que se agregó:
+### Should
 
-- control de productos terminados por **ubicación** (tienda y bodega) y por **lote con fecha de vencimiento**;
-- aviso de vencimiento a 5 días para los insumos;
-- descuento de insumos según la **receta** al registrar una producción;
-- **reposición de vitrina** desde bodega;
-- proveedores de referencia: La Vega Central y Lo Valledor.
+- RF07: Establecer niveles mínimos de stock.
+- RF08: Identificar insumos que requieren reposición.
+- RF09: Generar alertas de reposición.
+- RF10: Mantener el historial de movimientos.
+- RF11: Consultar el historial de movimientos.
+- RF12: Registrar información básica de las compras.
+- RF13: Consultar materias primas con mayor frecuencia de reposición.
 
-La solución se materializa en una base de datos MySQL en 3FN (`db/`), consultas de negocio, una alerta diaria automática en n8n (`docs/automatizacion/`) y una página web de uso interno, cuyas capturas (de una versión anterior) están en `docs/pagina-web/`. La página no se publica por solicitud del propietario. La trazabilidad completa está en [`CHANGELOG.md`](../CHANGELOG.md).
+### Nuevos en la Entrega 2
 
-## Datos del caso
+Derivan de incorporar el control de productos terminados y de vencimientos (ver [`00-caso-pyme.md`](00-caso-pyme.md)).
 
-El catálogo, las recetas y los mínimos provienen de un levantamiento con la PYME. Las compras, producciones y movimientos de las tres semanas de prueba (26-10 a 15-11-2026) y la mañana del 16-11-2026 son **sintéticos coherentes con el caso**.
+- RF14 (Must): Controlar el stock de productos terminados por ubicación (tienda y bodega).
+- RF15 (Must): Avisar los vencimientos próximos (insumos a 5 días o menos).
+- RF16 (Must): Descontar los insumos según la receta al registrar una producción.
+- RF17 (Must): Reponer la vitrina desde bodega, sacando primero lo que vence antes.
+
+
+### Trazabilidad con la solución
+
+| Código | Evidencia |
+|---|---|
+| RF01–RF02 | Tabla `insumo` |
+| RF03 | `compra`, `detalle_compra`, `lote_insumo` |
+| RF04 | `movimiento_insumo` |
+| RF05–RF06 | Stock = suma de lotes; consultas C1 y C9 |
+| RF07–RF09 | `insumo.stock_minimo_semanal`; consulta C1; correo diario de n8n |
+| RF10–RF11 | `movimiento_insumo`, `movimiento_producto`; consulta C8 |
+| RF12–RF13 | `compra.es_planificada`; consulta C6 |
+| RF14–RF17 | `lote_producto`, `receta`, `produccion`; consultas C2 y C3 |
+
+## Requerimientos no funcionales principales
+
+El sistema deberá ser sencillo de utilizar, almacenar la información de forma persistente, validar los datos ingresados y poder ejecutarse localmente.
+
+También se busca que las operaciones principales se realicen rápidamente y que el sistema sea compatible con navegadores web de uso habitual.
+
+En la Entrega 2 se suman: que el sistema sea reproducible siguiendo solo el `README.md` y que el acceso esté restringido a usuarios autorizados.
